@@ -1,2 +1,2 @@
 [workspace]
-members = ["narrative-folding", "catalyst-cloud", "consortium"]
+members = ["narrative-folding", "catalyst-cloud", "consortium", "mantis"]

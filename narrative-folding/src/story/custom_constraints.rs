@@ -1,3 +1,7 @@
+use crate::story::constraints::Constraint;
+use crate::story::state::NarrativeState;
+use crate::story::graph::NarrativeGraph;
+
 /*
 Custom constraints are defined in the `custom_constraints.rs` file. 
 
@@ -30,6 +34,8 @@ let character_growth = Constraint::new(
 );
 */
 
+
+
 enum ConstraintType {
     Sequence,
     Quantity,
@@ -53,5 +59,59 @@ impl CustomConstraint {
             elements: elements.iter().map(|&s| s.to_string()).collect(),
             condition: condition.to_string(),
         }
+    }
+}
+
+impl Constraint for CustomConstraint {
+    fn check(&self, state: &NarrativeState, graph: &NarrativeGraph) -> bool {
+        match self.constraint_type {
+            ConstraintType::Sequence => {
+                // Check if elements are in sequence
+            }
+            ConstraintType::Quantity => {
+                // Check if elements are in quantity
+            }
+            ConstraintType::Presence => {
+                // Check if elements are present
+            }
+            ConstraintType::Exclusion => {
+                // Check if elements are excluded
+            }
+            ConstraintType::Custom(ref condition) => {
+                // Check custom condition
+                eval(condition, state, graph)
+            }
+        }
+    }
+
+    fn get_weight(&self) -> f64 {
+        // Implement weight retrieval based on constraint type
+    }
+}
+
+// ConstraintManager to handle multiple constraints
+struct ConstraintManager {
+    constraints: Vec<Box<dyn Constraint>>,
+}
+
+impl ConstraintManager {
+    fn new() -> Self {
+        ConstraintManager {
+            constraints: Vec::new(),
+        }
+    }
+
+    fn add_constraint(&mut self, constraint: Box<dyn Constraint>) {
+        self.constraints.push(constraint);
+    }
+
+    fn check_all(&self, state: &NarrativeState, graph: &NarrativeGraph) -> bool {
+        self.constraints.iter().all(|c| c.check(state, graph))
+    }
+
+    fn get_score(&self, state: &NarrativeState, graph: &NarrativeGraph) -> f64 {
+        self.constraints.iter().map(|c| {
+            if c.check(state, graph) { c.get_weight() } else { 0.0 }
+        }).sum()
     }
 }

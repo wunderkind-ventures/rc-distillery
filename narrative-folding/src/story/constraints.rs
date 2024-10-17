@@ -190,30 +190,3 @@ impl Constraint for EmotionalVarietyConstraint {
         self.weight
     }
 }
-
-// ConstraintManager to handle multiple constraints
-struct ConstraintManager {
-    constraints: Vec<Box<dyn Constraint>>,
-}
-
-impl ConstraintManager {
-    fn new() -> Self {
-        ConstraintManager {
-            constraints: Vec::new(),
-        }
-    }
-
-    fn add_constraint(&mut self, constraint: Box<dyn Constraint>) {
-        self.constraints.push(constraint);
-    }
-
-    fn check_all(&self, state: &NarrativeState, graph: &NarrativeGraph) -> bool {
-        self.constraints.iter().all(|c| c.check(state, graph))
-    }
-
-    fn get_score(&self, state: &NarrativeState, graph: &NarrativeGraph) -> f64 {
-        self.constraints.iter().map(|c| {
-            if c.check(state, graph) { c.get_weight() } else { 0.0 }
-        }).sum()
-    }
-}
